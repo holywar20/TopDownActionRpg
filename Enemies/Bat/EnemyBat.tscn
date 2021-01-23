@@ -1,0 +1,106 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Enemies/Bat/Bat.png" type="Texture" id=1]
+[ext_resource path="res://Shadows/SmallShadow.png" type="Texture" id=2]
+[ext_resource path="res://Hitboxes/Hurtbox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Enemies/Bat/EnemyBat.gd" type="Script" id=4]
+[ext_resource path="res://Stats.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Components/PlayerDetectionZone.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Hitboxes/Hitbox.tscn" type="PackedScene" id=7]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 16, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 48, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 64, 0, 16, 24 )
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
+"loop": true,
+"name": "FLYING",
+"speed": 10.0
+} ]
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 4.4478
+
+[sub_resource type="CircleShape2D" id=8]
+radius = 100.671
+
+[sub_resource type="CapsuleShape2D" id=9]
+radius = 8.13488
+height = 2.14957
+
+[sub_resource type="CircleShape2D" id=10]
+radius = 5.93776
+
+[node name="Bat" type="KinematicBody2D"]
+collision_layer = 16
+script = ExtResource( 4 )
+
+[node name="Sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 6 )
+animation = "FLYING"
+frame = 4
+playing = true
+offset = Vector2( 0, -12 )
+
+[node name="SpriteShadow" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 7 )
+
+[node name="PlayerDector" parent="." instance=ExtResource( 6 )]
+
+[node name="CollisionShape2D" parent="PlayerDector" index="0"]
+position = Vector2( -0.817009, -12.843 )
+shape = SubResource( 8 )
+
+[node name="HurtBox" parent="." instance=ExtResource( 3 )]
+position = Vector2( 7.83334, -0.25 )
+collision_layer = 8
+collision_mask = 0
+
+[node name="Collision" parent="HurtBox" index="0"]
+position = Vector2( -7.78918, -14.4937 )
+shape = SubResource( 9 )
+
+[node name="Hitbox" parent="." instance=ExtResource( 7 )]
+position = Vector2( 0, -15 )
+collision_mask = 4
+
+[node name="Collision" parent="Hitbox" index="0"]
+position = Vector2( 0.16666, -0.166664 )
+shape = SubResource( 10 )
+
+[node name="Stats" parent="." instance=ExtResource( 5 )]
+maxHealth = 2
+[connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
+[connection signal="no_health" from="Stats" to="." method="_on_Stats_no_health"]
+
+[editable path="PlayerDector"]
+
+[editable path="HurtBox"]
+
+[editable path="Hitbox"]
